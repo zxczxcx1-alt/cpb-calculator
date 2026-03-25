@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>CPB Dose Calculator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    font-family: "Microsoft JhengHei", Arial, sans-serif;
+    background: #f9fafd;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.container {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 700px;
+}
+
+h2 {
+    text-align: center;
+    color: #0b5394;
+    margin-bottom: 20px;
+}
+
+.layout {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.input-area {
+    width: 40%;
+}
+
+.result-area {
+    width: 60%;
+    background: #eaf1fb;
+    padding: 15px;
+    border-radius: 8px;
+    line-height: 1.8;
+}
+
+label {
+    display: block;
+    margin-top: 12px;
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+.section-title {
+    font-weight: bold;
+    margin-top: 12px;
+}
+
+.value {
+    color: #0b5394;
+    font-weight: 600;
+    font-size: 20px;
+    letter-spacing: 0.5px;
+    margin-right: 3px;
+}
+
+.hint {
+    font-size: 12px;
+    color: #999;
+    margin-left: 4px;
+}
+
+@media (max-width: 600px) {
+    .layout {
+        flex-direction: column;
+    }
+    .input-area, .result-area {
+        width: 100%;
+    }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<h2>CPB Dose Calculator</h2>
+
+<div class="layout">
+    <div class="input-area">
+        <label>身高 (cm)</label>
+        <input type="number" id="height" placeholder="輸入身高">
+
+        <label>體重 (kg)</label>
+        <input type="number" id="weight" placeholder="輸入體重">
+
+        <button id="calcBtn" style="margin-top:10px; padding:8px 12px;">計算</button>
+    </div>
+
+    <div class="result-area" id="results">
+        請輸入身高與體重
+    </div>
+</div>
+</div>
+
+<script>
+document.getElementById('calcBtn').addEventListener('click', function() {
+    let height = parseFloat(document.getElementById('height').value);
+    let weight = parseFloat(document.getElementById('weight').value);
+
+    if (!height || !weight || height <= 0 || weight <= 0) {
+        document.getElementById('results').innerHTML = "請輸入身高與體重";
+        return;
+    }
+
+    let BSA = ((height - 160 + weight) / 100) + 1;
+
+    let heparinU = weight * 300;
+    let heparinML = heparinU / 5000;
+
+    let lowFlow = BSA * 2;
+    let fullFlow = BSA * 2.5;
+    let highFlow = BSA * 3;
+
+    let plegisol = weight * 15;
+    let plegisolThird = plegisol / 3;
+
+    let HTK180 = weight * 30;
+    let HTK120 = weight * 20;
+
+    document.getElementById('results').innerHTML = `
+        <div class="section-title">📊 基本數值</div>
+        BSA：<span class="value">${BSA.toFixed(2)}</span> m²<br>
+
+        <div class="section-title">💉 藥物劑量</div>
+        Heparin<span class="hint">(1 ml = 5000 U)</span>：
+        <span class="value">${heparinML.toFixed(2)}</span> ml 
+        (<span class="value">${heparinU.toFixed(0)}</span> U)<br>
+
+        Plegisol：<span class="value">${plegisol.toFixed(0)}</span> ml<br>
+        1/3 Plegisol：<span class="value">${plegisolThird.toFixed(0)}</span> ml<br>
+
+        HTK (180 min)：<span class="value">${HTK180.toFixed(0)}</span> ml<br>
+        HTK (120 min)：<span class="value">${HTK120.toFixed(0)}</span> ml<br>
+
+        <div class="section-title">🫀 Flow 建議</div>
+        Low Flow：<span class="value">${lowFlow.toFixed(2)}</span> L/min<br>
+        Full Flow：<span class="value">${fullFlow.toFixed(2)}</span> L/min<br>
+        High Flow：<span class="value">${highFlow.toFixed(2)}</span> L/min
+    `;
+});
+</script>
+</body>
+</html>
